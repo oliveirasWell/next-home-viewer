@@ -1,3 +1,4 @@
+import { FC } from 'react'
 import Head from 'next/head'
 import styled from 'styled-components'
 
@@ -5,7 +6,7 @@ const Container = styled.div`
   background-color: #2d2f33;
 `
 
-export default function Home() {
+const Home: FC = () => {
   return (
     <Container className="container">
       <Head>
@@ -206,3 +207,5 @@ export default function Home() {
     </Container>
   )
 }
+
+export default Home
