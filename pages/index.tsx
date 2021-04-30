@@ -64,7 +64,7 @@ const Home: FC = () => {
                     <h4>max {kelvinToCelsiusString(data?.main?.temp_max)}</h4>
                     <h4>min {kelvinToCelsiusString(data?.main?.temp_min)}</h4>
                     <p>
-                      Enjoy our day (or not){' '}
+                      Enjoy your day (or not){' '}
                       <span role="img" aria-label="emoji-sun-glasses">
                         😎
                       </span>
