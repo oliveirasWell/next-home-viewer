@@ -1,8 +1,13 @@
 import Head from 'next/head'
+import styled from 'styled-components'
+
+const Container = styled.div`
+  background-color: #2d2f33;
+`
 
 export default function Home() {
   return (
-    <div className="container">
+    <Container className="container">
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
@@ -58,7 +63,7 @@ export default function Home() {
           <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
         </a>
       </footer>
-
+      {/* Remove this shit */}
       <style jsx>{`
         .container {
           min-height: 100vh;
@@ -189,10 +194,11 @@ export default function Home() {
           }
         }
       `}</style>
-
       <style jsx global>{`
         html,
         body {
+          color: lightgrey;
+          background-color: #2d2f33;
           padding: 0;
           margin: 0;
           font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
@@ -204,6 +210,6 @@ export default function Home() {
           box-sizing: border-box;
         }
       `}</style>
-    </div>
+    </Container>
   )
 }
