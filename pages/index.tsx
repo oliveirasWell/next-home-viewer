@@ -26,7 +26,9 @@ const kelvinToCelsiusString = (temp: number): string => `${kelvinToCelsius(temp)
 
 const Home: FC = () => {
   const [loading, setLoading] = useState(false)
-  const [data, setData] = useState< { name: string, main: {temp: number, temp_max: number, temp_min: number}} | undefined>(undefined)
+  const [data, setData] = useState<
+    { name: string; main: { temp: number; temp_max: number; temp_min: number } } | undefined
+  >(undefined)
 
   useEffect(() => {
     const fetchResult = async (): Promise<void> => {
