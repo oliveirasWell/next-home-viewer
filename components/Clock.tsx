@@ -2,7 +2,7 @@
 
 import { Component } from 'react'
 
-export class Clock extends Component<{}, {time: string}> {
+export class Clock extends Component<{}, { time: string }> {
   // @ts-ignore
   constructor(props) {
     // @ts-ignore
