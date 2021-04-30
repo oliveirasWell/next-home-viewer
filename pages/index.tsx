@@ -19,6 +19,7 @@ const Card = styled.div`
   border: 1px solid #eaeaea;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
+  min-width: 300px;
 `
 
 const kelvinToCelsius = (temp: number): number => temp - 273.15
