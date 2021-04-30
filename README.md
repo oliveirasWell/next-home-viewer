@@ -1,1 +1,2 @@
-This is a starter template for [Learn Next.js](https://nextjs.org/learn).
+## Just a project to see the weather on São Carlos - SP
+
