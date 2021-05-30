@@ -5,7 +5,11 @@ import { GlobalStyle } from '../components/GlobalStyle'
 import { Clock } from '../components/Clock'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { useGeolocation } from '../hooks/useGeolocation'
-import { useOpenWeather } from '../hooks/useOpenWeather'
+
+import { ApolloProvider } from '@apollo/client'
+import client from '../configs/apollo-client'
+import { useHomeData } from '../hooks/useHomeData'
+import { useOpenWeatherGraphql } from '../hooks/useOpenWeatherGraphql'
 
 const queryClient = new QueryClient()
 
@@ -61,10 +65,8 @@ const Home: FC = () => {
   const lat = position?.coords?.latitude
   const lon = position?.coords?.longitude
 
-  const localTemp = 30
-  const localHumid = 15
-
-  const { isLoading, data } = useOpenWeather(lat, lon)
+  const { localHumid, localTemp } = useHomeData()
+  const { isLoading, data } = useOpenWeatherGraphql(lat, lon)
 
   return (
     <>
@@ -95,7 +97,7 @@ const Home: FC = () => {
               )}
             </Card>
             <Card>
-              <CardH3>House</CardH3>
+              <CardH3>Home</CardH3>
               <p>Local Temp: {localTemp}</p>
               <p>Local Humid: {localHumid}%</p>
             </Card>
@@ -114,7 +116,9 @@ const Home: FC = () => {
 const HomeContainer: FC = () => (
   <QueryClientProvider client={queryClient}>
     <GlobalStyle />
-    <Home />
+    <ApolloProvider client={client}>
+      <Home />
+    </ApolloProvider>
   </QueryClientProvider>
 )
 

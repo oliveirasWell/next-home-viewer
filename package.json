@@ -13,6 +13,10 @@
     "start": "next start"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.19",
+    "apollo-datasource-rest": "^0.14.0",
+    "apollo-server-micro": "^2.25.0",
+    "graphql": "^15.5.0",
     "next": "^10.0.0",
     "next-google-fonts": "^2.2.0",
     "react": "17.0.1",
