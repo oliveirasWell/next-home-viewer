@@ -45,7 +45,7 @@
   },
   "lint-staged": {
     "**/*.(ts|js)?(x)": [
-      "eslint",
+      "eslint --fix",
       "prettier --write"
     ]
   }
