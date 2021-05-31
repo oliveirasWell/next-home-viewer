@@ -19,14 +19,10 @@ export const useOpenWeatherGraphql = (
   lat: number | undefined,
   lon: number | undefined
 ): UseOpenWeatherI => {
-  const { data, loading: isLoading, error } = useQuery(QUERY, {
+  const { data, loading: isLoading } = useQuery(QUERY, {
     variables: { lat, lon },
     skip: !(lat && lon),
   })
-
-  console.log(data)
-  console.log(data)
-  console.log(error)
 
   return { isLoading, data: data?.weather }
 }
