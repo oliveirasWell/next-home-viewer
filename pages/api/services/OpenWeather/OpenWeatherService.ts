@@ -1,6 +1,6 @@
-import { GeolocationCords } from '../../../../../typings/GeolocationCords'
-import { getOpenWeatherURL } from '../../../../../shared/utils'
-import { TemperatureLecture } from '../../../../../typings/TemperatureLecture'
+import { GeolocationCords } from '../../../../typings/GeolocationCords'
+import { TemperatureLecture } from '../../../../typings/TemperatureLecture'
+import { getOpenWeatherURL } from '../../../../shared/utils'
 
 class OpenWeatherService {
   async weather({ lon, lat }: GeolocationCords): Promise<TemperatureLecture> {

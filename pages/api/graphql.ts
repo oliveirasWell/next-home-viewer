@@ -1,8 +1,8 @@
-import { OpenWeatherResolver } from './resolvers/resolvers/OpenWeather/OpenWeatherResolver'
 import { ApolloServer } from 'apollo-server-micro'
 import { GRAPHQL_API_PATH } from '../../shared/utils'
-import { HomeResolver } from './resolvers/resolvers/Home/HomeResolver'
 import { typeDefs } from './typeDefs'
+import { HomeResolver } from './services/Home/HomeResolver'
+import { OpenWeatherResolver } from './services/OpenWeather/OpenWeatherResolver'
 
 const resolvers = {
   Query: {

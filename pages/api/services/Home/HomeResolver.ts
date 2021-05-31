@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { firebaseDatabase } from '../../../../../configs/firebase-config'
+import { firebaseDatabase } from '../../../../configs/firebase-config'
 
 interface HomeI {
   temperature: number
