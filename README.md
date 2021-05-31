@@ -1,3 +1,2 @@
-## Just a project to see the weather on São Carlos - SP
-
+## Just a project to see the weather where you are
 https://next-home-viewer.vercel.app/
