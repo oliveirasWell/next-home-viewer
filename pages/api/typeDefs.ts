@@ -3,21 +3,25 @@ import { gql } from 'apollo-server-micro'
 export const typeDefs = gql`
   type Query {
     _empty: String
+    sendMessage(text: String): Boolean
+    weather(lon: Float, lat: Float): OpenWeatherReading!
+    home: Home!
   }
   type Mutation {
     _empty: String
   }
-  extend type Query {
-    weather(lon: Float, lat: Float): OpenWeatherReading!
-    home: Home!
-  }
   type Home {
     temperature: Int!
     humidity: Int!
+    date: Int!
+    plant: Plant
   }
   type OpenWeatherReading {
     name: String!
     main: Weather!
+  }
+  type Plant {
+    humidity: Int!
   }
   type Weather {
     temp: Float!

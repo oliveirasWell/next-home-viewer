@@ -3,9 +3,11 @@ import { GRAPHQL_API_PATH } from '../../shared/utils'
 import { typeDefs } from './typeDefs'
 import { HomeResolver } from './services/Home/HomeResolver'
 import { OpenWeatherResolver } from './services/OpenWeather/OpenWeatherResolver'
+import { TelegramResolver } from './services/Telegram/TelegramResolver'
 
 const resolvers = {
   Query: {
+    ...TelegramResolver,
     ...HomeResolver,
     ...OpenWeatherResolver,
   },

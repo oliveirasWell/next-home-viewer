@@ -65,7 +65,7 @@ const Home: FC = () => {
   const lat = position?.coords?.latitude
   const lon = position?.coords?.longitude
 
-  const { localHumid, localTemp } = useHomeData()
+  const { localHumid, localTemp, date, plant } = useHomeData()
   const { isLoading, data } = useOpenWeatherGraphql(lat, lon)
 
   return (
@@ -100,6 +100,14 @@ const Home: FC = () => {
               <CardH3>Home</CardH3>
               <p>Local Temp: {localTemp}</p>
               <p>Local Humid: {localHumid}%</p>
+              {Boolean(date) && <p>Last updated: {date?.toLocaleTimeString()} </p>}
+
+              {Boolean(plant) && (
+                <>
+                  <CardH3>Plant</CardH3>
+                  <p>Humid: {plant.humidity}</p>
+                </>
+              )}
             </Card>
             <Card>
               <p>Latitude: {position?.coords?.latitude}</p>
