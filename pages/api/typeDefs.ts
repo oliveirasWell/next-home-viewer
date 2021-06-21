@@ -22,6 +22,7 @@ export const typeDefs = gql`
   }
   type Plant {
     humidity: Int!
+    date: Int!
   }
   type Weather {
     temp: Float!

@@ -17,13 +17,18 @@ export const HomeResolver = {
   async home(parent: unknown, args: unknown, context: unknown): Promise<HomeI> {
     const snapshot = await firebaseDatabase.ref().child('home').child(ID).get()
 
-    let temperature, humidity, data, plant
+    let temperature, humidity, data, plant_1
     try {
-      ;({ temperature, humidity, data, plant } = snapshot.val())
+      ;({ temperature, humidity, data, plant_1 } = snapshot.val())
     } catch (error) {
       console.error(error)
     }
 
-    return { temperature, humidity, date: Number(data) + TIMEZONE_OFFSET, plant }
+    return {
+      temperature: temperature as number,
+      humidity: humidity as number,
+      date: (Number(data) + TIMEZONE_OFFSET) as number,
+      plant: { humidity: plant_1.humidity, date: Number(plant_1.date) + TIMEZONE_OFFSET } as Plant,
+    }
   },
 }

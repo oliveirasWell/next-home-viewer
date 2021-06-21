@@ -65,8 +65,9 @@ const Home: FC = () => {
   const lat = position?.coords?.latitude
   const lon = position?.coords?.longitude
 
-  const { localHumid, localTemp, date, plant } = useHomeData()
+  const { localHumid, localTemp, date, plants } = useHomeData()
   const { isLoading, data } = useOpenWeatherGraphql(lat, lon)
+  const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   return (
     <>
@@ -100,14 +101,22 @@ const Home: FC = () => {
               <CardH3>Home</CardH3>
               <p>Local Temp: {localTemp}</p>
               <p>Local Humid: {localHumid}%</p>
-              {Boolean(date) && <p>Last updated: {date?.toLocaleTimeString()} </p>}
-
-              {Boolean(plant) && (
-                <>
-                  <CardH3>Plant</CardH3>
-                  <p>Humid: {plant.humidity}</p>
-                </>
+              {Boolean(date) && (
+                <p>Last updated: {date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })} </p>
               )}
+
+              {(plants || []).map((plant, i) => (
+                <div key={i}>
+                  <CardH3>Plant {i + 1}</CardH3>
+                  <p>Humid: {plant.humidity}</p>
+                  {Boolean(plant?.date) && (
+                    <p>
+                      Last updated:{' '}
+                      {plant?.date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}
+                    </p>
+                  )}
+                </div>
+              ))}
             </Card>
             <Card>
               <p>Latitude: {position?.coords?.latitude}</p>
