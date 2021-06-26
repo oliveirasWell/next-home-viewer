@@ -18,28 +18,50 @@ const Container = styled.div`
   background-color: #2d2f33;
 `
 
-const Card = styled.div<{ textCentered?: boolean }>`
+interface CardProps {
+  textCentered?: boolean
+  backgroundImage?: string
+  color?: string
+}
+
+const Card = styled.div<CardProps>`
   margin: 1rem;
   padding: 1.5rem;
   text-align: left;
-  color: inherit;
+  color: ${({ color }) => (!color ? 'lightgrey' : color)};
   text-decoration: none;
-  border: 1px solid #eaeaea;
-  border-radius: 10px;
+  border: 1px solid rgba(80, 77, 77, 0.6);
   transition: color 0.15s ease, border-color 0.15s ease;
   ${({ textCentered = false }) => textCentered && 'text-align: center;'}
   flex: 1;
-  //display: flex;
-  //flex-direction: column;
+  position: relative;
+  z-index: 1;
 
   @media (min-width: 1000px) {
     min-width: 300px;
   }
 `
+const Image = styled.div<{ backgroundImage?: string }>`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: -2;
+  ${({ backgroundImage }) =>
+    backgroundImage &&
+    `
+    background-image: url(${backgroundImage});
+    // backdrop-filter: blur(5px);
+    // -webkit-backdrop-filter: blur(5px);
+    background-size: cover;
+    background-color: rgba(171, 167, 167, 0.9);
+    background-blend-mode: lighten;
+  `}
+`
 
 const Grid = styled.div`
   display: flex;
-  align-items: center;
   justify-content: center;
   flex-wrap: wrap;
   flex-direction: row;
@@ -84,7 +106,8 @@ const Home: FC = () => {
         </Head>
         <main>
           <Grid>
-            <Card>
+            <Card color="#2d2f33">
+              <Image backgroundImage="./assets/desktop.jpg" />
               <CardH3>Home</CardH3>
               <p>Local Temp: {localTemp}</p>
               <p>Local Humid: {localHumid}%</p>
@@ -94,7 +117,8 @@ const Home: FC = () => {
             </Card>
 
             {(plants || []).map((plant, i) => (
-              <Card key={i}>
+              <Card key={i} color="#2d2f33">
+                <Image backgroundImage={`./assets/plant_${i + 1}.jpg`} />
                 <CardH3>Plant {i + 1}</CardH3>
                 <p>Humid: {plant.humidity}</p>
                 {Boolean(plant?.date) && (

@@ -45,6 +45,7 @@ body {
   margin: 0;
   font-family: monospace;
   font-size: 16px;
+  z-index: -2;
 }
 
 * {
