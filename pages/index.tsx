@@ -85,6 +85,13 @@ const CardP = styled.p`
   line-height: 1.5;
 `
 
+const P = styled.p`
+  font-size: 1.3rem;
+  font-weight: 300;
+  margin-top: 16px;
+  margin-bottom: 0;
+`
+
 const kelvinToCelsiusString = (temp: number): string => `${kelvinToCelsius(temp).toFixed(2)}˚ C`
 
 const Home: FC = () => {
@@ -109,10 +116,10 @@ const Home: FC = () => {
             <Card color="#2d2f33">
               <Image backgroundImage="./assets/desktop.jpg" />
               <CardH3>Home</CardH3>
-              <p>Local Temp: {localTemp}</p>
-              <p>Local Humid: {localHumid}%</p>
+              <P>Local Temp: {localTemp}</P>
+              <P>Local Humid: {localHumid}%</P>
               {Boolean(date) && (
-                <p>Last updated: {date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })} </p>
+                <P>Last updated: {date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })} </P>
               )}
             </Card>
 
@@ -120,12 +127,12 @@ const Home: FC = () => {
               <Card key={i} color="#2d2f33">
                 <Image backgroundImage={`./assets/plant_${i + 1}.jpg`} />
                 <CardH3>Plant {i + 1}</CardH3>
-                <p>Humid: {plant.humidity}</p>
+                <P>Humid: {plant.humidity}</P>
                 {Boolean(plant?.date) && (
-                  <p>
+                  <P>
                     Last updated:{' '}
                     {plant?.date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}
-                  </p>
+                  </P>
                 )}
               </Card>
             ))}
@@ -150,8 +157,8 @@ const Home: FC = () => {
             </Card>
 
             <Card>
-              <p>Latitude: {position?.coords?.latitude}</p>
-              <p>Longitude: {position?.coords?.longitude}</p>
+              <P>Latitude: {position?.coords?.latitude}</P>
+              <P>Longitude: {position?.coords?.longitude}</P>
             </Card>
 
             <Card textCentered>
