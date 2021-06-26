@@ -116,7 +116,7 @@ const Home: FC = () => {
             <Card color="#2d2f33">
               <Image backgroundImage="./assets/desktop.jpg" />
               <CardH3>Home</CardH3>
-              <P>Local Temp: {localTemp}</P>
+              <P>Local Temp: {localTemp}˚ C </P>
               <P>Local Humid: {localHumid}%</P>
               {Boolean(date) && (
                 <P>Last updated: {date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })} </P>
