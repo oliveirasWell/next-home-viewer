@@ -1,5 +1,6 @@
 import { ApolloError, gql, useQuery } from '@apollo/client'
 import { PlantI } from '../typings/Plant'
+import { HomeI } from '../typings/HomeI'
 
 const QUERY = gql`
   query Home {
@@ -7,7 +8,7 @@ const QUERY = gql`
       temperature
       humidity
       date
-      plant {
+      plants {
         humidity
         date
       }
@@ -19,7 +20,7 @@ interface UseHomeDataI {
   date: Date | undefined
   localHumid: number | undefined
   localTemp: number | undefined
-  plants: PlantI[]
+  plants: PlantI[] | undefined
   loading: boolean
   error: ApolloError | undefined
 }
@@ -30,17 +31,22 @@ const convertToDate = (data: number): Date => {
   return d
 }
 
-export const useHomeData = (): UseHomeDataI => {
-  const { data, loading, error } = useQuery(QUERY)
+interface HomeQuery {
+  home: HomeI
+}
 
-  const data1 = data?.home?.plant?.date
-  const plant = { ...data?.home?.plant, date: convertToDate(data1) }
-  const plants: PlantI[] = [plant]
+export const useHomeData = (): UseHomeDataI => {
+  const { data, loading, error } = useQuery<HomeQuery>(QUERY)
+
+  const plants = data?.home?.plants?.map((plant) => ({
+    ...plant,
+    date: convertToDate(plant?.date || -1),
+  }))
 
   return {
     localTemp: data?.home?.temperature,
     localHumid: data?.home?.humidity,
-    date: convertToDate(data?.home?.date),
+    date: convertToDate(data?.home?.date || -1),
     plants,
     loading,
     error,

@@ -9,3 +9,5 @@ export const getOpenWeatherURL = (lat: number | undefined, lon: number | undefin
 
 export const getOpenWeatherParams = (lat: number | undefined, lon: number | undefined): string =>
   `lat=${lat}&lon=${lon}&appid=${process.env.NEXT_PUBLIC_API_KEY}`
+
+export const kelvinToCelsius = (temp: number): number => temp - 273.15

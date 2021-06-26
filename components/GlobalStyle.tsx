@@ -2,7 +2,6 @@ import { createGlobalStyle } from 'styled-components'
 
 export const GlobalStyle = createGlobalStyle`
 main {
-  padding: 5rem 0;
   flex: 1;
   display: flex;
   flex-direction: column;

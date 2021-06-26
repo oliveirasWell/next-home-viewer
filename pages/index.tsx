@@ -10,6 +10,7 @@ import { ApolloProvider } from '@apollo/client'
 import client from '../configs/apollo-client'
 import { useHomeData } from '../hooks/useHomeData'
 import { useOpenWeatherGraphql } from '../hooks/useOpenWeatherGraphql'
+import { kelvinToCelsius } from '../shared/utils'
 
 const queryClient = new QueryClient()
 
@@ -17,10 +18,8 @@ const Container = styled.div`
   background-color: #2d2f33;
 `
 
-const Card = styled.div`
-  background-color: #2d2f38;
+const Card = styled.div<{ textCentered?: boolean }>`
   margin: 1rem;
-  flex-basis: 45%;
   padding: 1.5rem;
   text-align: left;
   color: inherit;
@@ -28,7 +27,14 @@ const Card = styled.div`
   border: 1px solid #eaeaea;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
-  min-width: 400px;
+  ${({ textCentered = false }) => textCentered && 'text-align: center;'}
+  flex: 1;
+  //display: flex;
+  //flex-direction: column;
+
+  @media (min-width: 1000px) {
+    min-width: 300px;
+  }
 `
 
 const Grid = styled.div`
@@ -36,13 +42,14 @@ const Grid = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  flex-direction: row;
 
-  max-width: 800px;
-  margin-top: 3rem;
+  max-width: 1000px;
 
   @media (max-width: 600px) {
     width: 100%;
     flex-direction: column;
+    align-items: stretch;
   }
 `
 const CardH3 = styled.h3`
@@ -56,7 +63,6 @@ const CardP = styled.p`
   line-height: 1.5;
 `
 
-const kelvinToCelsius = (temp: number): number => temp - 273.15
 const kelvinToCelsiusString = (temp: number): string => `${kelvinToCelsius(temp).toFixed(2)}˚ C`
 
 const Home: FC = () => {
@@ -77,8 +83,29 @@ const Home: FC = () => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <main>
-          <Clock />
           <Grid>
+            <Card>
+              <CardH3>Home</CardH3>
+              <p>Local Temp: {localTemp}</p>
+              <p>Local Humid: {localHumid}%</p>
+              {Boolean(date) && (
+                <p>Last updated: {date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })} </p>
+              )}
+            </Card>
+
+            {(plants || []).map((plant, i) => (
+              <Card key={i}>
+                <CardH3>Plant {i + 1}</CardH3>
+                <p>Humid: {plant.humidity}</p>
+                {Boolean(plant?.date) && (
+                  <p>
+                    Last updated:{' '}
+                    {plant?.date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}
+                  </p>
+                )}
+              </Card>
+            ))}
+
             <Card>
               {isLoading && <>Loading...</>}
               {!isLoading && !!data && (
@@ -97,30 +124,14 @@ const Home: FC = () => {
                 </>
               )}
             </Card>
-            <Card>
-              <CardH3>Home</CardH3>
-              <p>Local Temp: {localTemp}</p>
-              <p>Local Humid: {localHumid}%</p>
-              {Boolean(date) && (
-                <p>Last updated: {date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })} </p>
-              )}
 
-              {(plants || []).map((plant, i) => (
-                <div key={i}>
-                  <CardH3>Plant {i + 1}</CardH3>
-                  <p>Humid: {plant.humidity}</p>
-                  {Boolean(plant?.date) && (
-                    <p>
-                      Last updated:{' '}
-                      {plant?.date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </Card>
             <Card>
               <p>Latitude: {position?.coords?.latitude}</p>
               <p>Longitude: {position?.coords?.longitude}</p>
+            </Card>
+
+            <Card textCentered>
+              <Clock />
             </Card>
           </Grid>
         </main>

@@ -14,7 +14,7 @@ export const typeDefs = gql`
     temperature: Int!
     humidity: Int!
     date: Int!
-    plant: Plant
+    plants: [Plant]
   }
   type OpenWeatherReading {
     name: String!
