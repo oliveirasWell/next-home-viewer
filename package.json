@@ -10,7 +10,8 @@
     "postinstall": "husky install",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint:all": "yarn type-check && yarn lint && prettier --write ."
   },
   "dependencies": {
     "@apollo/client": "^3.3.19",

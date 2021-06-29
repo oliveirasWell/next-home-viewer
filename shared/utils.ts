@@ -11,3 +11,6 @@ export const getOpenWeatherParams = (lat: number | undefined, lon: number | unde
   `lat=${lat}&lon=${lon}&appid=${process.env.NEXT_PUBLIC_API_KEY}`
 
 export const kelvinToCelsius = (temp: number): number => temp - 273.15
+
+export const kelvinToCelsiusString = (temp: number): string =>
+  `${kelvinToCelsius(temp).toFixed(2)}˚ C`
