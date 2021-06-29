@@ -5,7 +5,7 @@ import { useHomeData } from '../hooks/useHomeData'
 import { useOpenWeatherGraphql } from '../hooks/useOpenWeatherGraphql'
 import Head from 'next/head'
 import { kelvinToCelsiusString } from '../shared/utils'
-import { Clock } from '../components/Clock'
+import { Clock } from './Clock'
 
 interface CardProps {
   textCentered?: boolean

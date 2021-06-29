@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 
 import { ApolloProvider } from '@apollo/client'
 import client from '../configs/apollo-client'
-import { Home } from './Home'
+import { Home } from '../components/Home'
 
 const queryClient = new QueryClient()
 
