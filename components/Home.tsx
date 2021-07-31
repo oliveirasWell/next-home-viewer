@@ -1,10 +1,9 @@
 import styled from 'styled-components'
 import { FC } from 'react'
-import { useGeolocation } from '../hooks/useGeolocation'
 import { useHomeData } from '../hooks/useHomeData'
 import { useOpenWeatherGraphql } from '../hooks/useOpenWeatherGraphql'
 import Head from 'next/head'
-import { kelvinToCelsiusString } from '../shared/utils'
+import { kelvinToCelsiusString, randomIntFromInterval } from '../shared/utils'
 import { Clock } from './Clock'
 
 interface CardProps {
@@ -13,21 +12,19 @@ interface CardProps {
   color?: string
 }
 
-const Container = styled.div`
-  background-color: #2d2f33;
-`
+const Container = styled.div``
 const Card = styled.div<CardProps>`
   margin: 1rem;
   padding: 1.5rem;
   text-align: left;
   color: ${({ color }) => (!color ? 'lightgrey' : color)};
   text-decoration: none;
-  border: 1px solid rgba(80, 77, 77, 0.6);
   transition: color 0.15s ease, border-color 0.15s ease;
   ${({ textCentered = false }) => textCentered && 'text-align: center;'}
   flex: 1;
   position: relative;
   z-index: 1;
+  border-radius: 30px;
 
   @media (min-width: 1000px) {
     min-width: 300px;
@@ -40,6 +37,8 @@ const Image = styled.div<{ backgroundImage?: string }>`
   right: 0;
   left: 0;
   z-index: -2;
+  border-radius: 30px;
+
   ${({ backgroundImage }) =>
     backgroundImage &&
     `
@@ -67,26 +66,31 @@ const CardH3 = styled.h3`
   margin: 0 0 1rem 0;
   font-size: 1.5rem;
 `
+
+const CardH1 = styled.h1`
+  margin: 0 0 1rem 0;
+  font-size: 3rem;
+`
 const CardP = styled.p`
   margin: 0;
   font-size: 1.25rem;
   line-height: 1.5;
 `
-const P = styled.p`
-  font-size: 1.3rem;
+
+const Psmall = styled.p`
+  font-size: 1rem;
   font-weight: 300;
   margin-top: 16px;
   margin-bottom: 0;
 `
+
 export const Home: FC = () => {
-  const { position } = useGeolocation()
-
-  const lat = position?.coords?.latitude
-  const lon = position?.coords?.longitude
-
   const { localHumid, localTemp, date, plants } = useHomeData()
-  const { isLoading, data } = useOpenWeatherGraphql(lat, lon)
+  const { isLoading, data } = useOpenWeatherGraphql(-22.000306899999998, -47.8922185)
   const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+  const sancaImageNumber = randomIntFromInterval(1, 5)
+  const sancaImageNumberTime = randomIntFromInterval(1, 5)
 
   return (
     <>
@@ -99,29 +103,28 @@ export const Home: FC = () => {
           <Grid>
             <Card color="#2d2f33">
               <Image backgroundImage="./assets/desktop.jpg" />
-              <CardH3>Home</CardH3>
-              <P>Local Temp: {localTemp}˚ C </P>
-              <P>Local Humid: {localHumid}%</P>
+              <CardH1>{localTemp}˚C</CardH1>
+              <CardH3>{localHumid}%</CardH3>
               {Boolean(date) && (
-                <P>Last updated: {date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })} </P>
+                <Psmall>{date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })} </Psmall>
               )}
             </Card>
 
             {(plants || []).map((plant, i) => (
               <Card key={i} color="#2d2f33">
                 <Image backgroundImage={`./assets/plant_${i + 1}.jpg`} />
-                <CardH3>Plant {i + 1}</CardH3>
-                <P>Humid: {plant.humidity}</P>
+                <CardH1>{plant.humidity}</CardH1>
+                <Psmall>Plant {i + 1}</Psmall>
                 {Boolean(plant?.date) && (
-                  <P>
-                    Last updated:{' '}
+                  <Psmall>
                     {plant?.date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}
-                  </P>
+                  </Psmall>
                 )}
               </Card>
             ))}
 
-            <Card>
+            <Card color="#2d2f33">
+              <Image backgroundImage={`./assets/sanca${sancaImageNumber}.jpg`} />
               {isLoading && <>Loading...</>}
               {!isLoading && !!data && (
                 <>
@@ -130,27 +133,21 @@ export const Home: FC = () => {
                   <h4>feels like {kelvinToCelsiusString(data?.main?.feels_like)}</h4>
                   <h4>max {kelvinToCelsiusString(data?.main?.temp_max)}</h4>
                   <h4>min {kelvinToCelsiusString(data?.main?.temp_min)}</h4>
-                  <CardP>
-                    Enjoy your day (or not){' '}
-                    <span role="img" aria-label="emoji-sun-glasses">
-                      😎
-                    </span>
-                  </CardP>
                 </>
               )}
             </Card>
-
-            <Card>
-              <P>Latitude: {position?.coords?.latitude}</P>
-              <P>Longitude: {position?.coords?.longitude}</P>
-            </Card>
-
-            <Card textCentered>
+            <Card textCentered color="#2d2f33">
+              <Image backgroundImage={`./assets/sanca${sancaImageNumberTime}.jpg`} />
               <Clock />
+              <CardP>
+                Enjoy your day (or not){' '}
+                <span role="img" aria-label="emoji-sun-glasses">
+                  😎
+                </span>
+              </CardP>
             </Card>
           </Grid>
         </main>
-        <footer />
       </Container>
     </>
   )

@@ -14,3 +14,7 @@ export const kelvinToCelsius = (temp: number): number => temp - 273.15
 
 export const kelvinToCelsiusString = (temp: number): string =>
   `${kelvinToCelsius(temp).toFixed(2)}˚ C`
+
+export const randomIntFromInterval = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}

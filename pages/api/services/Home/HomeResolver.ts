@@ -24,11 +24,13 @@ export const HomeResolver = {
       console.error(error)
     }
 
+    const plants = [plant(plant_1), plant(plant_2)]
+
     return {
       temperature: temperature as number,
       humidity: humidity as number,
       date: (Number(data) + TIMEZONE_OFFSET) as number,
-      plants: [plant(plant_1), plant(plant_2)],
+      plants: plants,
     }
   },
 }
