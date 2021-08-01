@@ -159,11 +159,7 @@ type CustomizedAxisTickProps = {
   payload: { value: number }
 }
 
-const CustomizedAxisTick: FC<CustomizedAxisTickProps> = ({
-  x,
-  y,
-  payload,
-}: CustomizedAxisTickProps) => {
+const CustomizedAxisTick = ({ x, y, payload }: CustomizedAxisTickProps) => {
   const toLocaleString = convertToDate(payload.value)?.toLocaleString('pt-BR', {
     hour: '2-digit',
     minute: '2-digit',
@@ -173,13 +169,11 @@ const CustomizedAxisTick: FC<CustomizedAxisTickProps> = ({
   console.log(toLocaleString)
 
   return (
-    <>
-      <g transform={`translate(${x},${y})`}>
-        <text x={0} y={0} dy={16} textAnchor="end" fill="#666">
-          {toLocaleString}
-        </text>
-      </g>
-    </>
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={16} textAnchor="end" fill="#666">
+        {toLocaleString}
+      </text>
+    </g>
   )
 }
 
@@ -198,8 +192,6 @@ export const Home: FC = () => {
   const sancaImageNumberTime = randomIntFromInterval(1, 5)
   const sancaImageNumberGithub = randomIntFromInterval(1, 5)
 
-  // @ts-ignore
-  // @ts-ignore
   return (
     <>
       <Container>
@@ -268,7 +260,7 @@ export const Home: FC = () => {
                       stroke={accentColor}
                       strokeWidth={2}
                     />
-                    <XAxis dataKey="date" tick={<CustomizedAxisTick />} />
+                    <XAxis dataKey="date" tick={CustomizedAxisTick} />
                     <YAxis domain={['dataMin - 2', 'dataMax + 2']} dataKey="temperature" />
                   </LineChart>
                 </ResponsiveContainer>
