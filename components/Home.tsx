@@ -44,7 +44,7 @@ const Image = styled.div<{ backgroundImage?: string }>`
     `
     background-image: url(${backgroundImage});
     background-size: cover;
-    background-color: rgba(171, 167, 167, 0.4);
+    background-color: rgba(171, 167, 167, 0.1);
     background-blend-mode: lighten;
   `}
 `
@@ -73,6 +73,12 @@ const CardColored = styled.div<{ tempColor?: string }>`
   padding: 16px;
 `
 
+const CardLightColored = styled.div<{ tempColor?: string }>`
+  padding: 16px;
+  background-color: rgba(171, 167, 167, 0.7);
+  background-blend-mode: lighten;
+`
+
 const CardH1 = styled.h1`
   margin: 0 0 1rem 0;
   font-size: 3rem;
@@ -91,10 +97,10 @@ const Psmall = styled.p`
   margin-bottom: 8px;
 `
 
-const Hr = styled.hr`
-  border: 1px solid green;
-  color: green;
-  background-color: green;
+const Hr = styled.hr<{ tempColor?: string }>`
+  border: 1px solid ${({ tempColor }) => tempColor || 'rgba(255, 89, 89, 0.95)'};
+  color: ${({ tempColor }) => tempColor || 'rgba(255, 89, 89, 0.95)'};
+  background-color: ${({ tempColor }) => tempColor || 'rgba(255, 89, 89, 0.95)'};
 `
 
 const tempEmoji = ({ temp: tempString = 0 }): string => {
@@ -152,13 +158,13 @@ export const Home: FC = () => {
               </CardColored>
               <Hr />
               {Boolean(date) && (
-                <CardColored>
+                <CardLightColored>
                   <Psmall>
                     {' '}
                     {tempEmoji({ temp: localTemp })}{' '}
                     {date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}{' '}
                   </Psmall>
-                </CardColored>
+                </CardLightColored>
               )}
             </Card>
 
@@ -170,14 +176,14 @@ export const Home: FC = () => {
                   <CardH3> Humid</CardH3>
                 </CardColored>
                 <Hr />
-                <CardColored>
+                <CardLightColored>
                   <Psmall>Plant {i + 1}</Psmall>
                   {Boolean(plant?.date) && (
                     <Psmall>
                       {plant?.date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}
                     </Psmall>
                   )}
-                </CardColored>
+                </CardLightColored>
               </Card>
             ))}
 
@@ -191,20 +197,20 @@ export const Home: FC = () => {
                   </CardColored>
                   <Hr />
 
-                  <CardColored>
+                  <CardLightColored>
                     <h4>{kelvinToCelsiusString(data?.main?.temp)}</h4>
                     <h4>feels like {kelvinToCelsiusString(data?.main?.feels_like)}</h4>
                     <h4>max {kelvinToCelsiusString(data?.main?.temp_max)}</h4>
                     <h4>min {kelvinToCelsiusString(data?.main?.temp_min)}</h4>
-                  </CardColored>
+                  </CardLightColored>
                 </>
               )}
             </Card>
             <Card textCentered color={textColor}>
               <Image backgroundImage={`./assets/sanca${sancaImageNumberTime}.jpg`} />
-              <CardColored>
+              <CardLightColored>
                 <Clock />
-              </CardColored>
+              </CardLightColored>
               <Hr />
               <CardColored>
                 <CardP>
