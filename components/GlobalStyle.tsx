@@ -48,7 +48,7 @@ export const GlobalStyle = createGlobalStyle`
 
     @media (prefers-color-scheme: light) {
       body {
-        background-color: #646060;
+        background-color: #e1e1e1;
         color: #333;
       }
     }

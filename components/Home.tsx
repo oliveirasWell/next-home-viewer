@@ -6,6 +6,8 @@ import Head from 'next/head'
 import { kelvinToCelsiusString, randomIntFromInterval } from '../shared/utils'
 import { Clock } from './Clock'
 
+const textColor = '#2d2f33'
+
 interface CardProps {
   textCentered?: boolean
   backgroundImage?: string
@@ -24,7 +26,6 @@ const Card = styled.div<CardProps>`
   flex: 1;
   position: relative;
   z-index: 1;
-  border-radius: 30px;
 
   @media (min-width: 1000px) {
     min-width: 300px;
@@ -37,14 +38,13 @@ const Image = styled.div<{ backgroundImage?: string }>`
   right: 0;
   left: 0;
   z-index: -2;
-  border-radius: 30px;
 
   ${({ backgroundImage }) =>
     backgroundImage &&
     `
     background-image: url(${backgroundImage});
     background-size: cover;
-    background-color: rgba(171, 167, 167, 0.9);
+    background-color: rgba(171, 167, 167, 0.4);
     background-blend-mode: lighten;
   `}
 `
@@ -65,11 +65,18 @@ const Grid = styled.div`
 const CardH3 = styled.h3`
   margin: 0 0 1rem 0;
   font-size: 1.5rem;
+  display: inline;
+`
+
+const CardColored = styled.div<{ tempColor?: string }>`
+  background-color: ${({ tempColor }) => tempColor || 'rgba(255, 89, 89, 0.95)'};
+  padding: 16px;
 `
 
 const CardH1 = styled.h1`
   margin: 0 0 1rem 0;
   font-size: 3rem;
+  display: inline;
 `
 const CardP = styled.p`
   margin: 0;
@@ -78,11 +85,47 @@ const CardP = styled.p`
 `
 
 const Psmall = styled.p`
-  font-size: 1rem;
-  font-weight: 300;
-  margin-top: 16px;
-  margin-bottom: 0;
+  font-size: 0.8rem;
+  font-weight: 800;
+  margin-top: 8px;
+  margin-bottom: 8px;
 `
+
+const Hr = styled.hr`
+  border: 1px solid green;
+  color: green;
+  background-color: green;
+`
+
+const tempEmoji = ({ temp: tempString = 0 }): string => {
+  const temp = Number(tempString)
+
+  const getEmoji = (): string => {
+    if (temp && temp < 0) {
+      return '❄❄❄❄'
+    }
+
+    if (temp && temp <= 10) {
+      return '❄🥶❄'
+    }
+
+    if (temp && temp <= 20) {
+      return '🥶'
+    }
+
+    if (temp && temp <= 30) {
+      return '🌞'
+    }
+
+    if (temp && temp > 30) {
+      return '🥵'
+    }
+
+    return ''
+  }
+
+  return getEmoji()
+}
 
 export const Home: FC = () => {
   const { localHumid, localTemp, date, plants } = useHomeData()
@@ -101,50 +144,76 @@ export const Home: FC = () => {
         </Head>
         <main>
           <Grid>
-            <Card color="#2d2f33">
+            <Card color={textColor}>
               <Image backgroundImage="./assets/desktop.jpg" />
-              <CardH1>{localTemp}˚C</CardH1>
-              <CardH3>{localHumid}%</CardH3>
+              <CardColored>
+                <CardH1>{localTemp}˚</CardH1>
+                <CardH3>{localHumid}% </CardH3>
+              </CardColored>
+              <Hr />
               {Boolean(date) && (
-                <Psmall>{date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })} </Psmall>
+                <CardColored>
+                  <Psmall>
+                    {' '}
+                    {tempEmoji({ temp: localTemp })}{' '}
+                    {date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}{' '}
+                  </Psmall>
+                </CardColored>
               )}
             </Card>
 
             {(plants || []).map((plant, i) => (
-              <Card key={i} color="#2d2f33">
+              <Card key={i} color={textColor}>
                 <Image backgroundImage={`./assets/plant_${i + 1}.jpg`} />
-                <CardH1>{plant.humidity}</CardH1>
-                <Psmall>Plant {i + 1}</Psmall>
-                {Boolean(plant?.date) && (
-                  <Psmall>
-                    {plant?.date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}
-                  </Psmall>
-                )}
+                <CardColored>
+                  <CardH1>{plant.humidity}</CardH1>
+                  <CardH3> Humid</CardH3>
+                </CardColored>
+                <Hr />
+                <CardColored>
+                  <Psmall>Plant {i + 1}</Psmall>
+                  {Boolean(plant?.date) && (
+                    <Psmall>
+                      {plant?.date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}
+                    </Psmall>
+                  )}
+                </CardColored>
               </Card>
             ))}
 
-            <Card color="#2d2f33">
+            <Card color={textColor}>
               <Image backgroundImage={`./assets/sanca${sancaImageNumber}.jpg`} />
               {isLoading && <>Loading...</>}
               {!isLoading && !!data && (
                 <>
-                  <CardH3>{data?.name}</CardH3>
-                  <h4>{kelvinToCelsiusString(data?.main?.temp)}</h4>
-                  <h4>feels like {kelvinToCelsiusString(data?.main?.feels_like)}</h4>
-                  <h4>max {kelvinToCelsiusString(data?.main?.temp_max)}</h4>
-                  <h4>min {kelvinToCelsiusString(data?.main?.temp_min)}</h4>
+                  <CardColored>
+                    <CardH3>{data?.name}</CardH3>
+                  </CardColored>
+                  <Hr />
+
+                  <CardColored>
+                    <h4>{kelvinToCelsiusString(data?.main?.temp)}</h4>
+                    <h4>feels like {kelvinToCelsiusString(data?.main?.feels_like)}</h4>
+                    <h4>max {kelvinToCelsiusString(data?.main?.temp_max)}</h4>
+                    <h4>min {kelvinToCelsiusString(data?.main?.temp_min)}</h4>
+                  </CardColored>
                 </>
               )}
             </Card>
-            <Card textCentered color="#2d2f33">
+            <Card textCentered color={textColor}>
               <Image backgroundImage={`./assets/sanca${sancaImageNumberTime}.jpg`} />
-              <Clock />
-              <CardP>
-                Enjoy your day (or not){' '}
-                <span role="img" aria-label="emoji-sun-glasses">
-                  😎
-                </span>
-              </CardP>
+              <CardColored>
+                <Clock />
+              </CardColored>
+              <Hr />
+              <CardColored>
+                <CardP>
+                  Enjoy your day (or not){' '}
+                  <span role="img" aria-label="emoji-sun-glasses">
+                    😎
+                  </span>
+                </CardP>
+              </CardColored>
             </Card>
           </Grid>
         </main>
