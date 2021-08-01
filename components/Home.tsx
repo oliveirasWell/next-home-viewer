@@ -5,6 +5,8 @@ import { useOpenWeatherGraphql } from '../hooks/useOpenWeatherGraphql'
 import Head from 'next/head'
 import { kelvinToCelsiusString, randomIntFromInterval } from '../shared/utils'
 import { Clock } from './Clock'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 const textColor = '#2d2f33'
 
@@ -23,7 +25,6 @@ const Card = styled.div<CardProps>`
   text-decoration: none;
   transition: color 0.15s ease, border-color 0.15s ease;
   ${({ textCentered = false }) => textCentered && 'text-align: center;'}
-  flex: 1;
   position: relative;
   z-index: 1;
 
@@ -31,6 +32,13 @@ const Card = styled.div<CardProps>`
     min-width: 300px;
   }
 `
+
+const GithubIcon = styled(({ className }) => (
+  <FontAwesomeIcon icon={faGithub} size="xs" className={className} />
+))`
+  max-width: 50px;
+`
+
 const Image = styled.div<{ backgroundImage?: string }>`
   position: absolute;
   top: 0;
@@ -53,8 +61,7 @@ const Grid = styled.div`
   justify-content: center;
   flex-wrap: wrap;
   flex-direction: row;
-
-  max-width: 1000px;
+  width: 100%;
 
   @media (max-width: 600px) {
     width: 100%;
@@ -62,6 +69,7 @@ const Grid = styled.div`
     align-items: stretch;
   }
 `
+
 const CardH3 = styled.h3`
   margin: 0 0 1rem 0;
   font-size: 1.5rem;
@@ -133,13 +141,16 @@ const tempEmoji = ({ temp: tempString = 0 }): string => {
   return getEmoji()
 }
 
+const Loading = () => <CardColored>Loading...</CardColored>
+
 export const Home: FC = () => {
-  const { localHumid, localTemp, date, plants } = useHomeData()
+  const { localHumid, localTemp, date, plants, loading: homeLoading } = useHomeData()
   const { isLoading, data } = useOpenWeatherGraphql(-22.000306899999998, -47.8922185)
   const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   const sancaImageNumber = randomIntFromInterval(1, 5)
   const sancaImageNumberTime = randomIntFromInterval(1, 5)
+  const sancaImageNumberGithub = randomIntFromInterval(1, 5)
 
   return (
     <>
@@ -151,45 +162,56 @@ export const Home: FC = () => {
         <main>
           <Grid>
             <Card color={textColor}>
-              <Image backgroundImage="./assets/desktop.jpg" />
-              <CardColored>
-                <CardH1>{localTemp}˚</CardH1>
-                <CardH3>{localHumid}% </CardH3>
-              </CardColored>
-              <Hr />
-              {Boolean(date) && (
-                <CardLightColored>
-                  <Psmall>
-                    {' '}
-                    {tempEmoji({ temp: localTemp })}{' '}
-                    {date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}{' '}
-                  </Psmall>
-                </CardLightColored>
+              {homeLoading && <Loading />}
+              {!homeLoading && (
+                <>
+                  <Image backgroundImage="./assets/desktop.jpg" />
+                  <CardColored>
+                    <CardH1>{localTemp}˚</CardH1>
+                    <CardH3>{localHumid}% </CardH3>
+                  </CardColored>
+                  <Hr />
+                  {Boolean(date) && (
+                    <CardLightColored>
+                      <Psmall>
+                        {' '}
+                        {tempEmoji({ temp: localTemp })}{' '}
+                        {date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}{' '}
+                      </Psmall>
+                    </CardLightColored>
+                  )}
+                </>
               )}
             </Card>
 
             {(plants || []).map((plant, i) => (
               <Card key={i} color={textColor}>
-                <Image backgroundImage={`./assets/plant_${i + 1}.jpg`} />
-                <CardColored>
-                  <CardH1>{plant.humidity}</CardH1>
-                  <CardH3> Humid</CardH3>
-                </CardColored>
-                <Hr />
-                <CardLightColored>
-                  <Psmall>Plant {i + 1}</Psmall>
-                  {Boolean(plant?.date) && (
-                    <Psmall>
-                      {plant?.date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}
-                    </Psmall>
-                  )}
-                </CardLightColored>
+                {homeLoading && <Loading />}
+                {!homeLoading && (
+                  <>
+                    <Image backgroundImage={`./assets/plant_${i + 1}.jpg`} />
+                    <CardColored>
+                      <CardH1>{plant.humidity}</CardH1>
+                      <CardH3> Humid</CardH3>
+                    </CardColored>
+                    <Hr />
+                    <CardLightColored>
+                      <Psmall>Plant {i + 1}</Psmall>
+                      {Boolean(plant?.date) && (
+                        <Psmall>
+                          {plant?.date?.toLocaleString('pt-BR', { timeZone: clientTimeZone })}
+                        </Psmall>
+                      )}
+                    </CardLightColored>
+                  </>
+                )}
               </Card>
             ))}
-
+          </Grid>
+          <Grid>
             <Card color={textColor}>
               <Image backgroundImage={`./assets/sanca${sancaImageNumber}.jpg`} />
-              {isLoading && <>Loading...</>}
+              {isLoading && <Loading />}
               {!isLoading && !!data && (
                 <>
                   <CardColored>
@@ -206,6 +228,7 @@ export const Home: FC = () => {
                 </>
               )}
             </Card>
+
             <Card textCentered color={textColor}>
               <Image backgroundImage={`./assets/sanca${sancaImageNumberTime}.jpg`} />
               <CardLightColored>
@@ -214,11 +237,24 @@ export const Home: FC = () => {
               <Hr />
               <CardColored>
                 <CardP>
-                  Enjoy your day (or not){' '}
+                  Enjoy your day <br />
+                  (or not){' '}
                   <span role="img" aria-label="emoji-sun-glasses">
                     😎
                   </span>
                 </CardP>
+              </CardColored>
+            </Card>
+            <Card textCentered color={textColor}>
+              <Image backgroundImage={`./assets/sanca${sancaImageNumberGithub}.jpg`} />
+              <CardColored>
+                <a
+                  href="https://github.com/oliveiraswell/next-home-viewer"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <GithubIcon />
+                </a>
               </CardColored>
             </Card>
           </Grid>
