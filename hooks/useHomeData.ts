@@ -12,6 +12,10 @@ const QUERY = gql`
         humidity
         date
       }
+      temperatureHistory {
+        date
+        temperature
+      }
     }
   }
 `
@@ -23,9 +27,10 @@ interface UseHomeDataI {
   plants: PlantI[] | undefined
   loading: boolean
   error: ApolloError | undefined
+  temperatureHistory: { temperature: number; date: number }[] | undefined
 }
 
-const convertToDate = (data: number): Date => {
+export const convertToDate = (data: number): Date => {
   const d = new Date(0) // The 0 there is the key, which sets the date to the epoch
   d.setUTCSeconds(data)
   return d
@@ -50,5 +55,6 @@ export const useHomeData = (): UseHomeDataI => {
     plants,
     loading,
     error,
+    temperatureHistory: data?.home?.temperatureHistory,
   }
 }

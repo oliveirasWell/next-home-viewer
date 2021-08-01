@@ -5,4 +5,5 @@ export interface HomeI {
   humidity: number
   date: number
   plants: Plant[]
+  temperatureHistory: { temperature: number; date: number }[]
 }

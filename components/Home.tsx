@@ -1,18 +1,22 @@
 import styled from 'styled-components'
 import { FC } from 'react'
-import { useHomeData } from '../hooks/useHomeData'
+import { convertToDate, useHomeData } from '../hooks/useHomeData'
 import { useOpenWeatherGraphql } from '../hooks/useOpenWeatherGraphql'
 import Head from 'next/head'
 import { kelvinToCelsiusString, randomIntFromInterval } from '../shared/utils'
-import { Clock } from './Clock'
+import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
+import { Clock } from './Clock'
 
 const textColor = '#2d2f33'
+const accentColor = 'rgba(255, 89, 89, 0.95)'
+const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 interface CardProps {
   textCentered?: boolean
   backgroundImage?: string
+  backgroundColor?: string
   color?: string
 }
 
@@ -25,12 +29,19 @@ const Card = styled.div<CardProps>`
   text-decoration: none;
   transition: color 0.15s ease, border-color 0.15s ease;
   ${({ textCentered = false }) => textCentered && 'text-align: center;'}
+  ${({ backgroundColor = false }) => backgroundColor && `background-color: ${backgroundColor};`}
   position: relative;
   z-index: 1;
 
   @media (min-width: 1000px) {
     min-width: 300px;
   }
+`
+
+const CardFull = styled(Card)`
+  flex: 1;
+  height: 300px;
+  padding: 8px;
 `
 
 const GithubIcon = styled(({ className }) => (
@@ -58,7 +69,6 @@ const Image = styled.div<{ backgroundImage?: string }>`
 `
 const Grid = styled.div`
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
   flex-direction: row;
   width: 100%;
@@ -77,7 +87,7 @@ const CardH3 = styled.h3`
 `
 
 const CardColored = styled.div<{ tempColor?: string }>`
-  background-color: ${({ tempColor }) => tempColor || 'rgba(255, 89, 89, 0.95)'};
+  background-color: ${({ tempColor }) => tempColor || accentColor};
   padding: 16px;
 `
 
@@ -106,9 +116,9 @@ const Psmall = styled.p`
 `
 
 const Hr = styled.hr<{ tempColor?: string }>`
-  border: 1px solid ${({ tempColor }) => tempColor || 'rgba(255, 89, 89, 0.95)'};
-  color: ${({ tempColor }) => tempColor || 'rgba(255, 89, 89, 0.95)'};
-  background-color: ${({ tempColor }) => tempColor || 'rgba(255, 89, 89, 0.95)'};
+  border: 1px solid ${({ tempColor }) => tempColor || accentColor};
+  color: ${({ tempColor }) => tempColor || accentColor};
+  background-color: ${({ tempColor }) => tempColor || accentColor};
 `
 
 const tempEmoji = ({ temp: tempString = 0 }): string => {
@@ -141,17 +151,55 @@ const tempEmoji = ({ temp: tempString = 0 }): string => {
   return getEmoji()
 }
 
-const Loading = () => <CardColored>Loading...</CardColored>
+const Loading: FC = () => <CardColored>Loading...</CardColored>
+
+type CustomizedAxisTickProps = {
+  x: string
+  y: string
+  payload: { value: number }
+}
+
+const CustomizedAxisTick: FC<CustomizedAxisTickProps> = ({
+  x,
+  y,
+  payload,
+}: CustomizedAxisTickProps) => {
+  const toLocaleString = convertToDate(payload.value)?.toLocaleString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: clientTimeZone,
+  })
+
+  console.log(toLocaleString)
+
+  return (
+    <>
+      <g transform={`translate(${x},${y})`}>
+        <text x={0} y={0} dy={16} textAnchor="end" fill="#666">
+          {toLocaleString}
+        </text>
+      </g>
+    </>
+  )
+}
 
 export const Home: FC = () => {
-  const { localHumid, localTemp, date, plants, loading: homeLoading } = useHomeData()
+  const {
+    localHumid,
+    localTemp,
+    date,
+    plants,
+    loading: homeLoading,
+    temperatureHistory,
+  } = useHomeData()
   const { isLoading, data } = useOpenWeatherGraphql(-22.000306899999998, -47.8922185)
-  const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   const sancaImageNumber = randomIntFromInterval(1, 5)
   const sancaImageNumberTime = randomIntFromInterval(1, 5)
   const sancaImageNumberGithub = randomIntFromInterval(1, 5)
 
+  // @ts-ignore
+  // @ts-ignore
   return (
     <>
       <Container>
@@ -207,6 +255,25 @@ export const Home: FC = () => {
                 )}
               </Card>
             ))}
+
+            <CardFull backgroundColor="black">
+              <CardH3>Temperature History</CardH3>
+              {isLoading && <Loading />}
+              {!isLoading && !!data && (
+                <ResponsiveContainer width="100%" height="90%">
+                  <LineChart width={900} height={300} data={temperatureHistory}>
+                    <Line
+                      type="monotone"
+                      dataKey="temperature"
+                      stroke={accentColor}
+                      strokeWidth={2}
+                    />
+                    <XAxis dataKey="date" tick={<CustomizedAxisTick />} />
+                    <YAxis domain={['dataMin - 2', 'dataMax + 2']} dataKey="temperature" />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
+            </CardFull>
           </Grid>
           <Grid>
             <Card color={textColor}>
@@ -228,7 +295,6 @@ export const Home: FC = () => {
                 </>
               )}
             </Card>
-
             <Card textCentered color={textColor}>
               <Image backgroundImage={`./assets/sanca${sancaImageNumberTime}.jpg`} />
               <CardLightColored>

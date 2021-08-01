@@ -15,6 +15,7 @@ export const typeDefs = gql`
     humidity: Int!
     date: Int!
     plants: [Plant]
+    temperatureHistory: [TemperatureHistory]
   }
   type OpenWeatherReading {
     name: String!
@@ -29,5 +30,9 @@ export const typeDefs = gql`
     temp_max: Float!
     temp_min: Float!
     feels_like: Float!
+  }
+  type TemperatureHistory {
+    temperature: Int!
+    date: Int!
   }
 `
