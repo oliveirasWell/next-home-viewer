@@ -248,24 +248,26 @@ export const Home: FC = () => {
               </Card>
             ))}
 
-            <CardFull backgroundColor="black">
-              <CardH3>Temperature History</CardH3>
-              {isLoading && <Loading />}
-              {!isLoading && !!data && (
-                <ResponsiveContainer width="100%" height="90%">
-                  <LineChart width={900} height={300} data={temperatureHistory}>
-                    <Line
-                      type="monotone"
-                      dataKey="temperature"
-                      stroke={accentColor}
-                      strokeWidth={2}
-                    />
-                    <XAxis dataKey="date" tick={CustomizedAxisTick} />
-                    <YAxis domain={['dataMin - 2', 'dataMax + 2']} dataKey="temperature" />
-                  </LineChart>
-                </ResponsiveContainer>
-              )}
-            </CardFull>
+            {temperatureHistory && (
+              <CardFull backgroundColor="black">
+                <CardH3>Temperature History</CardH3>
+                {isLoading && <Loading />}
+                {!isLoading && !!data && (
+                  <ResponsiveContainer width="100%" height="90%">
+                    <LineChart width={900} height={300} data={temperatureHistory}>
+                      <Line
+                        type="monotone"
+                        dataKey="temperature"
+                        stroke={accentColor}
+                        strokeWidth={2}
+                      />
+                      <XAxis dataKey="date" tick={CustomizedAxisTick} />
+                      <YAxis domain={['dataMin - 2', 'dataMax + 2']} dataKey="temperature" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+              </CardFull>
+            )}
           </Grid>
           <Grid>
             <Card color={textColor}>

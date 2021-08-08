@@ -15,22 +15,15 @@ const plant = (plant_1: Plant): Plant =>
 
 export const HomeResolver = {
   async home(parent: unknown, args: unknown, context: unknown): Promise<HomeI> {
-    const snapshot = await firebaseDatabase.ref().child('home').child(ID).limitToLast(100).get()
-    const temperature_history_snap = await firebaseDatabase
-      .ref()
-      .child('home')
-      .child(ID)
-      .limitToLast(100)
-      .get()
+    const temperature = (await firebaseDatabase.ref().child('home/1/temperature').get()).val()
+    const humidity = (await firebaseDatabase.ref().child('home/1/humidity').get()).val()
+    const data = (await firebaseDatabase.ref().child('home/1/data').get()).val()
+    const plant_1 = (await firebaseDatabase.ref().child('home/1/plant_1').get()).val()
+    const plant_2 = (await firebaseDatabase.ref().child('home/1/plant_2').get()).val()
 
-    let temperature, humidity, data, plant_1, plant_2
-    const { temperature_history } = snapshot.val()
-
-    try {
-      ;({ temperature, humidity, data, plant_1, plant_2 } = snapshot.val())
-    } catch (error) {
-      console.error(error)
-    }
+    const temperature_history = (
+      await firebaseDatabase.ref().child('home/1/temperature_history').limitToLast(40).get()
+    ).val()
 
     const plants = [plant(plant_1), plant(plant_2)]
 
